@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+    
+  <select name="" id="" class="select"></select>
+  <select name="" id="" class="dis"></select>
+  <button class="search">搜尋</button>
+  <p class="sum"></p>
+  <ul class="zn"></ul>
+  <script>
+  var xhr=new XMLHttpRequest();
+xhr.open('get','https://work1999.kcg.gov.tw/open1999/ServiceRequestsQuery.asmx/ServiceRequestsQuery',true);
+xhr.send();
+xhr.onload=function(){
+  var data=JSON.parse(xhr.responseText);
+  var str='';
+  var dis=document.querySelector('.dis');
+  var zn=document.querySelector('.zn');
+  var total={};
+  var total2={};
+  var search=document.querySelector('.search');
+  var select=document.querySelector('.select');
+  var sum=document.querySelector('.sum');
+  for(var i=0;i<data.length;i++){
+    var content=data[i].ZipName_;
+    var content2=data[i].InformDesc_;
+    if(total[content]==undefined){
+      total[content]=1;
+    }else{
+      total[content]+=1;
+    };
+    if(total2[content2]==undefined){
+      total2[content2]=1;
+    }else{
+      total2[content2]+=1;
+    };
+  }
+  
+  var str2='';
+  for(var all in total){
+    str2+="<option>"+all+"</option>";
+  }
+  select.innerHTML=str2;
+  
+  var str4='';
+  for(var all in total2){
+    str4+="<option>"+all+"</option>";
+  }
+  dis.innerHTML=str4;
+ 
+  search.addEventListener("click",function(e){
+    var _dis=dis.value;
+    var _select=select.value;
+    var count=0;
+    str='';
+    for(var i=0;i<data.length;i++){
+        if(data[i].InformDesc_==_dis&&data[i].ZipName_==_select){
+        str+="<li>地點:"+data[i].address_+"</br>報案狀況:"+data[i].BeforeDesc_+"</li>";
+        count=count+1;
+      }
+    }
+    sum.innerHTML="全部 "+_dis+"有"+count+"處";
+    zn.innerHTML=str;
+  })
+  
+}
+  </script>
+  
+</body>
+</html>
